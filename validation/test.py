@@ -1,20 +1,32 @@
-import json
+from pathlib import Path
 import torch
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 
-def load_model():
-    model_name = "./fake_reviews_es"
-    tokenizer = AutoTokenizer.from_pretrained(model_name)
-    model = AutoModelForSequenceClassification.from_pretrained(model_name)
-    return model, tokenizer
+MODEL_PATH = Path(__file__).resolve().parent.parent / "fake_reviews_es"
 
-def test_inference(payload):
-    model, tokenizer = load_model()
-    data = json.loads(payload)
-    inputs = tokenizer(data["text"], return_tensors="pt", padding=True, truncation=True, max_length=512)
+tokenizer = AutoTokenizer.from_pretrained(
+    MODEL_PATH,
+    local_files_only=True
+)
+
+model = AutoModelForSequenceClassification.from_pretrained(
+    MODEL_PATH,
+    local_files_only=True
+)
+
+model.eval()
+
+
+def test_inference(text: str):
+    inputs = tokenizer(
+        text,
+        return_tensors="pt",
+        truncation=True,
+        padding=True,
+        max_length=512
+    )
+
     with torch.no_grad():
         outputs = model(**inputs)
-    logits = outputs.logits
-    predicted_class = torch.argmax(logits, dim=1).item()
-    result = predicted_class
-    return result
+
+    return torch.argmax(outputs.logits, dim=1).item()
