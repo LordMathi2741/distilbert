@@ -45,3 +45,4 @@ fake_reviews_es/*.safetensors
 fake_reviews_es/*.pt
 fake_reviews_es/*.ckpt
 fake_reviews_es/checkpoint-*/
+trainer_output/

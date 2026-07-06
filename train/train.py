@@ -8,7 +8,7 @@ model_name = "theArijitDas/distilbert-finetuned-fake-reviews"
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 model = AutoModelForSequenceClassification.from_pretrained(model_name)
 
-df = pd.read_csv("./fake_reviews_es.csv")
+df = pd.read_csv("train/dataset/fake_reviews_es.csv")
 df["label"] = df["label"].apply(lambda x: 1 if str(x).strip() == "CG" else 0)
 
 dataset = Dataset.from_pandas(df)
